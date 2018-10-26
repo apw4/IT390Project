@@ -22,9 +22,9 @@ function requestProcessor($request)
   }
   switch ($request['type'])
   {
-    case "login":
+    case 'login':
       return doLogin($request['username'],$request['password']);
-    case "validate_session":
+    case 'validate_session':
       return doValidate($request['sessionId']);
   }
   return array("returnCode" => '0', 'message'=>"Server received request and processed");

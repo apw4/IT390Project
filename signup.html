@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+	<script> 
+        /*$(document).ready(function() {
+            $('#identicalForm').bootstrapValidator({
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {
+                    password: {
+                        validators: {
+                            identical: {
+                                field: 'confirmPassword',
+                                message: 'The password and its confirm are not the same'
+                            }
+                        }
+                    },
+                    confirmPassword: {
+                        validators: {
+                            identical: {
+                                field: 'password',
+                                message: 'The password and its confirm are not the same'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        $(document).ready(function() {
+            $('#identicalForm').bootstrapValidator();
+        }); */
+        
+        /*var password = document.getElementById('pwd'), confirm_password = document.getElementById('cpwd');
+
+        function validatePassword() {
+          if (password.value != confirm_password.value) {
+            confirm_password.setCustomValidity("Passwords Don't Match");
+            $("#cpwdmatch").addClass("glyphicon glyphicon-remove form-control-feedback");
+          } else {
+            confirm_password.setCustomValidity('');
+            $("#cpwdmatch").removeClass("glyphicon glyphicon-remove form-control-feedback");
+          }
+        }
+        password.onchange = validatePassword;
+        confirm_password.onkeyup = validatePassword;*/
+        
+		$(function(){
+		 var keyStop = {
+		   8: ":not(input:text, textarea, input:file, input:password, input:number)", // stop backspace = back
+		   13: "input:text, input:password", // stop enter = submit 
+
+		   end: null
+		 };
+		 $(document).bind("keydown", function(event){
+		  var selector = keyStop[event.which];
+
+		  if(selector !== undefined && $(event.target).is(selector)) {
+			  event.preventDefault(); //stop event
+		  }
+		  return true;
+		 });
+		});
+	</script>
+	<style>
+		fieldset {
+			padding-top: 0.35em;
+			padding-bottom: 0.625em;
+			padding-left: 0.75em;
+			padding-right: 0.75em;
+			border: 2px groove (internal value); 
+			width: 70%; 
+			margin: auto; } 
+		legend {
+			font-size:160%; 
+			margin-left: 2px;
+			margin-right: 2px;
+			padding-top: 0.35em;
+			padding-bottom: 0.625em;
+			padding-left: 0.75em;
+			padding-right: 0.75em;}
+	</style>
+	
+<title>Oakville Online Banking - Registration</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<nav class="navbar navbar-default">
+	<div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">Online Banking Enrollment</a>
+    </div>
+  </div>
+</nav>
+	<form id="identicalForm">
+	<fieldset id="fieldset">
+        <div class="well">
+            <div class="form-group">
+                <label for="username">Create Username:</label>
+                <input type="text" class="form-control" id="username">
+            </div>
+            <div class="form-group">
+                <label for="email">Email address:</label>
+                <input type="email" class="form-control" id="email">
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="pwd">Create Password:</label>
+                <input type="password" class="form-control" name="password">
+            </div>
+            <div class="form-group">
+                <label class="control-label" for="cpwd">Re-enter Password:</label>
+                <input type="password" class="form-control" name="confirmPassword">
+            </div>
+            <input type=submit class="btn btn-info" value="Submit">
+        </div>
+	</fieldset>
+	</form>
+</body>
+</html>
