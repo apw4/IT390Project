@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.2.1.min.js"></script>
+	<script>
+		$(function(){
+		 var keyStop = {
+		   8: ":not(input:text, textarea, input:file, input:password, input:number)", // stop backspace = back
+		   13: "input:text, input:password", // stop enter = submit 
+
+		   end: null
+		 };
+		 $(document).bind("keydown", function(event){
+		  var selector = keyStop[event.which];
+
+		  if(selector !== undefined && $(event.target).is(selector)) {
+			  event.preventDefault(); //stop event
+		  }
+		  return true;
+		 });
+		});
+	</script>
+	<style>
+		fieldset {
+			padding-top: 0.35em;
+			padding-bottom: 0.625em;
+			padding-left: 0.75em;
+			padding-right: 0.75em;
+			border: 2px groove (internal value); 
+			width: 70%; 
+			margin: auto; } 
+		legend {
+			font-size:160%; 
+			margin-left: 2px;
+			margin-right: 2px;
+			padding-top: 0.35em;
+			padding-bottom: 0.625em;
+			padding-left: 0.75em;
+			padding-right: 0.75em;}
+	</style>
