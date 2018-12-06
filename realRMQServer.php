@@ -66,7 +66,7 @@ function signup($user, $pass, $mail){
 }
 
 function search($keyword){
-    $results = $omdb->search($keyword, 2);
+    $results = $omdb->search($keyword);
     return $results;
 }
 
