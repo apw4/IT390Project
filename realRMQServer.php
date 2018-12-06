@@ -11,6 +11,9 @@ require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
 require_once('moviedata.php');
 
+$omdb = new OMDb();
+$omdb->setParams( ['tomatoes' => TRUE, 'plot' => 'full', 'apikey' => '788ab293'] );
+
 //$baseurl = "http://www.omdbapi.com/?apikey=788ab293"
 
 function auth($user, $pass){ 
@@ -32,8 +35,6 @@ function auth($user, $pass){
     }
     else
     {
-        $omdb = new OMDb();
-        $omdb->setParams( ['tomatoes' => TRUE, 'plot' => 'full', 'apikey' => '788ab293'] );
       return true;
     }
 }
