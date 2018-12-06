@@ -9,10 +9,12 @@ error_reporting( E_ALL);
 require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
+require_once('moviedata.php');
 
+//$baseurl = "http://www.omdbapi.com/?apikey=788ab293"
 
 function auth($user, $pass){ 
-    $db = mysqli_connect ('%', 'hsagar111', '123456', 'auth');
+    ($db = mysqli_connect('%', 'hsagar111', '123456', 'auth'));
     if (mysqli_connect_errno()){
       echo "<br><br>Failed to connect to MYSQL<br><br> ". mysqli_connect_error();
       exit();
@@ -30,12 +32,14 @@ function auth($user, $pass){
     }
     else
     {
+        $omdb = new OMDb();
+        $omdb->setParams( ['tomatoes' => TRUE, 'plot' => 'full', 'apikey' => '788ab293'] );
       return true;
     }
 }
 
 function signup($user, $pass, $mail){
-    $db = mysqli_connect ('%', 'hsagar111', '123456', 'auth');
+    ($db = mysqli_connect('%', 'hsagar111', '123456', 'auth'));
     if (mysqli_connect_errno()){
       echo "<br><br>Failed to connect to MYSQL<br><br> ". mysqli_connect_error();
       exit();
@@ -60,6 +64,16 @@ function signup($user, $pass, $mail){
         return true;
     }
 }
+
+function search($keyword){
+    $results = $omdb->search($keyword, 2);
+    return $results;
+}
+
+function stats($id){
+    $results = $omdb->get_by_id($id);
+    return $results;
+}
     
 function requestProcessor($request){
   echo "received request".PHP_EOL;
@@ -71,9 +85,13 @@ function requestProcessor($request){
     
   switch ($request['type']){
     case "login":
-      return auth($request['user'], $request['pass']);
+        return auth($request['user'], $request['pass']);
     case "signup":
-      return signup($request['user'], $request['pass'], $request['mail']);
+        return signup($request['user'], $request['pass'], $request['mail']);
+    case "search":
+        return search($request['keyword']);
+    case "stats":
+        return stats($request['id']);
   }
     
   return array("returnCode" => '0', 'message'=>"Server received request and processed");
