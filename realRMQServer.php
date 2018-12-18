@@ -118,8 +118,8 @@ function search($keyword){
 }
 
 function stats($id){
-    $results = $omdb->get_by_id($id);
-    return $results;
+    // $results = $omdb->get_by_id($id);
+    // return $results;
 }
 
 function requestProcessor($request){
