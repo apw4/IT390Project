@@ -17,19 +17,23 @@ global $omdb;
 $omdb = new OMDb();
 $omdb->setParams( ['tomatoes' => TRUE, 'plot' => 'full', 'apikey' => '788ab293'] );
 
+function getDb() {
+  ($db = mysqli_connect('localhost', 'IT490', '$It4902018', 'films'));
+  if (mysqli_connect_errno()){
+    echo "<br><br>Failed to connect to MYSQL<br><br> ". mysqli_connect_error();
+    exit();
+  }  
+  echo "<br>Successfully connected to MySQL<br>";
+  
+  mysqli_select_db($db, 'films');
+  return $db;
+}    
+
 function auth($user, $pass){ 
-    ($db = mysqli_connect('localhost', 'IT490', '$It4902018', 'films'));
-    if (mysqli_connect_errno()){
-      echo "<br><br>Failed to connect to MYSQL<br><br> ". mysqli_connect_error();
-      exit();
-    }
-    echo "Successfully connected to MySQL<br><br>";
-    
-    mysqli_select_db($db, 'films' );
+    $db = getDb();
     $s = "select * from users where username = '$user' and password = '$pass'";
     ($t = mysqli_query($db, $s)) or die(mysqli_error($db));
     $num = mysqli_num_rows($t);
-    echo "kjgk";
     if ($num == 0)
     {
       return false;
@@ -40,15 +44,49 @@ function auth($user, $pass){
     }
 }
 
+function getUserInfo($user){
+    $db = getDb();
+    $s = "select * from users where username = '$user'";
+    ($t = mysqli_query($db, $s)) or die(mysqli_error($db));    
+    $user = mysqli_fetch_array($t, MYSQLI_ASSOC);
+    $num = mysqli_num_rows($t);
+    if ($num == 0)
+    {
+      return $user;
+    }
+    else
+    {
+      return "User not founds";
+    }
+}
+
+
+function favoriteMovie($user_id, $movie_id){
+    $db = getDb();
+    $s = "select * from favorite_movies where movie_id = '$movie_id' and user_id = '$user_id'";
+    ($t = mysqli_query($db, $s)) or die(mysqli_error($db));    
+    $num = mysqli_num_rows($t);
+    if ($num == 0)
+    {
+      $s = "insert into favorite_movies (user_id, movie_id) values ('$user_id', '$movie_id')";
+      ($t = mysqli_query($db, $s)) or die(mysqli_error($db));
+      return "Movie successfully added to your favorites list";
+    }
+    else
+    {
+      return "Movie is already in your favorites";
+    }
+}
+
+function unFavoriteMovie($user_id, $movie_id){
+    $db = getDb();
+    $s = "delete from favorite_movies  where movie_id = '$movie_id' and user_id = '$user_id'";
+    ($t = mysqli_query($db, $s)) or die(mysqli_error($db));
+    return "Movie successfully removed from your favorites list";
+}
+
 function signup($user, $pass, $mail){
-    ($db = mysqli_connect('localhost', 'IT490', '$It4902018', 'films'));
-    if (mysqli_connect_errno()){
-      echo "<br><br>Failed to connect to MYSQL<br><br> ". mysqli_connect_error();
-      exit();
-    }  
-    echo "<br>Successfully connected to MySQL<br>";
-    
-    mysqli_select_db($db, 'films');
+    $db = getDb();
     $s = "select * from users where email = '$mail' or username = '$user'"; 
     $t = mysqli_query($db, $s) or die(mysqli_error($db));
     $r = mysqli_fetch_array($t, MYSQLI_ASSOC);
@@ -73,22 +111,17 @@ function signup($user, $pass, $mail){
 }
 
 function search($keyword){
-/*$omdb = new OMDb();
-$omdb->setParams( ['tomatoes' => TRUE, 'plot' => 'full', 'apikey' => '788ab293'] );
-    $results = $omdb->search($keyword);*/
- $url = "http://www.omdbapi.com/?apikey=788ab293&r=json&s=".$keyword;
- $json = file_get_contents($url);
- $results = json_decode($json, true);
- /*foreach ($results['Search'] as $result) {
- echo implode(" ", $result);}*/
-    return $results;
+  $omdb = new OMDb();
+  $omdb->setParams( ['tomatoes' => TRUE, 'plot' => 'full', 'apikey' => '788ab293'] );
+  $results = $omdb->search($keyword);
+  return $results;
 }
 
 function stats($id){
-    /*$results = $omdb->get_by_id($id);
-    return $results;*/
+    $results = $omdb->get_by_id($id);
+    return $results;
 }
-    
+
 function requestProcessor($request){
   echo "received request".PHP_EOL;
   var_dump($request);
@@ -99,20 +132,27 @@ function requestProcessor($request){
     
   switch ($request['type']){
     case "login":
-	$x = auth($request['user'], $request['pass']);
-	if ($x){
-		$y = "true.";
-	}else if (!$x){
-		$y = "false.";}
-	echo "Server is sending the shit. It's ". $y;
-	return $x;
+    	$x = auth($request['user'], $request['pass']);
+    	if ($x){
+    		$y = "true.";
+    	} else if (!$x) {
+    		$y = "false.";
+      }
+    	echo "Server is sending the shit. It's ". $y;
+    	return $x;
+    case "getUserInfo":
+      return getUserInfo($request['user_id']);
+    case "favoriteMovie":
+      return favoriteMovie($request['user_id'], $request['movie_id']);
+    case "unFavoriteMovie":
+      return unFavoriteMovie($request['user_id'], $request['movie_id']);
     case "signup":
-        return signup($request['user'], $request['pass'], $request['mail']);
+      return signup($request['user'], $request['pass'], $request['mail']);
     case "search":
-        $x = search($request['keyword']);
-	foreach ($x['Search'] as $result) {
- 	echo implode(" ", $result);}
-	return $x;
+      $x = search($request['keyword']);
+    	foreach ($x['Search'] as $result) {
+     	echo implode(" ", $result);}
+    	return $x;
     case "stats":
         return stats($request['id']);
   }
