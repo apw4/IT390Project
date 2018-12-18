@@ -9,7 +9,7 @@ error_reporting( E_ALL);
 require_once('path.inc');
 require_once('get_host_info.inc');
 require_once('rabbitMQLib.inc');
-require_once('moviedata.php');
+require_once('omdb.class.php');
 
 $omdb = new OMDb();
 $omdb->setParams( ['tomatoes' => TRUE, 'plot' => 'full', 'apikey' => '788ab293'] );
@@ -17,14 +17,14 @@ $omdb->setParams( ['tomatoes' => TRUE, 'plot' => 'full', 'apikey' => '788ab293']
 //$baseurl = "http://www.omdbapi.com/?apikey=788ab293"
 
 function auth($user, $pass){ 
-    ($db = mysqli_connect('%', 'hsagar111', '123456', 'auth'));
+    ($db = mysqli_connect('%', 'root', 'dogbites', 'films'));
     if (mysqli_connect_errno()){
       echo "<br><br>Failed to connect to MYSQL<br><br> ". mysqli_connect_error();
       exit();
     }
     echo "Successfully connected to MySQL<br><br>";
     
-    mysqli_select_db($db, 'auth' );
+    mysqli_select_db($db, 'films' );
     $s = "select * from users where username = '$user' and password = '$pass'";
     ($t = mysqli_query ($db, $s)) or die(mysqli_error($db));
     $num = mysqli_num_rows($t);
@@ -40,14 +40,14 @@ function auth($user, $pass){
 }
 
 function signup($user, $pass, $mail){
-    ($db = mysqli_connect('%', 'hsagar111', '123456', 'auth'));
+    ($db = mysqli_connect('%', 'IT490', '$It4902018', 'films'));
     if (mysqli_connect_errno()){
       echo "<br><br>Failed to connect to MYSQL<br><br> ". mysqli_connect_error();
       exit();
     }  
     echo "<br>Successfully connected to MySQL<br>";
     
-    mysqli_select_db($db, 'auth');
+    mysqli_select_db($db, 'films');
     $s = "select * from users where email = '$mail' or username = '$user'"; 
     $t = mysqli_query($db, $s) or die(mysqli_error($db));
     $r = mysqli_fetch_array($t, MYSQLI_ASSOC);
@@ -67,13 +67,18 @@ function signup($user, $pass, $mail){
 }
 
 function search($keyword){
-    $results = $omdb->search($keyword);
-    return $results;
+   /* $omdb = new OMDb();
+    $omdb->setParams( ['tomatoes' => TRUE, 'plot' => 'full', 'apikey' => '788ab293'] );
+    $omdb->search($keyword);*/
+    $url = "httmp://www.omdbapi.com/?apikey=788ab293&r=json&s".$keyword;
+    $json = file_get_contents($url);
+    $results - json_decode($json);
+    return $omdb;
 }
 
 function stats($id){
-    $results = $omdb->get_by_id($id);
-    return $results;
+    $omdb->get_by_id($id);
+    return $omdb;
 }
     
 function requestProcessor($request){
