@@ -1,36 +1,4 @@
 <?php
-
-/*class MovieData {
-    public $moviedata = array(
-		'id'			=> null,
-		'title'			=> null,
-		'description'	=> null,
-		'year'			=> null,
-		'release_date'	=> null,
-		'status'		=> 'unreleased',
-		'rated' 		=> 'PG',
-		'rating' 		=> null,
-		'votes' 		=> null,
-		'duration' 		=> null,
-		'duration_time'	=> null,
-		'poster' 		=> null,
-		'poster_large'	=> null,
-		'poster_full'	=> null,
-		'country' 		=> null,
-		'language' 		=> null,
-		'genre'			=> [],
-		'actor' 		=> [],
-		'genre'			=> [],
-		'writer' 		=> [],
-		'director' 		=> [],
-		'trailer' 		=> null,
-		'trailer_embed'		=> null,
-        'title'			=> null,
-        'year'			=> null,
-        'poster' 		=> null, 
-	);
-}*/
-
 class OMDb {
     //API url
     private $url = 'http://www.omdbapi.com/';
